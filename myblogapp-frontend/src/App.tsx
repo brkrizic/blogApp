@@ -17,6 +17,7 @@ import { CreateEditPost } from "./pages/dashboard/CreateEditPost";
 
 function App() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const isLoggedIn = false;
 
@@ -31,6 +32,8 @@ function App() {
       <Route element={<Layout 
                         isModalOpen={isOpen} 
                         setIsModalOpen={setIsOpen}
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
                       />}>
         <Route path="/" element={<HomePage />}/>
         <Route path="/about" element={<AboutPage />}/>

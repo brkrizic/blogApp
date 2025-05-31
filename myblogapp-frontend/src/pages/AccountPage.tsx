@@ -1,6 +1,15 @@
+import { useOutletContext } from "react-router-dom";
 
+type ContextType = {
+    searchQuery: string;
+}
 
 const AccountPage = () => {
+
+    const { searchQuery } = useOutletContext<ContextType>();
+
+    console.log(searchQuery);
+
     return(
         <div className="flex">
 

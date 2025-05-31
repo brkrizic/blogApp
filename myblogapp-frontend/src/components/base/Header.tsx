@@ -1,8 +1,17 @@
+import { useCallback } from "react";
 import SearchBar from "../SearchBar";
 import { NavLink, useNavigate } from "react-router-dom";
 
-const Header = () => {
+type HeaderProps = {
+    setSearchQuery: (query: string) => void;
+}
+
+const Header = ({ setSearchQuery }: HeaderProps) => {
     const navigate = useNavigate();
+
+    const onSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+    }, []);
 
     return (
         <header className="bg-white shadow-md sticky top-0 z-50">
@@ -13,7 +22,7 @@ const Header = () => {
                 </NavLink>
 
                 {/* Search Bar */}
-                <SearchBar />
+                <SearchBar onSearchChange={onSearchChange}/>
 
 
                 {/* Navigation */}
