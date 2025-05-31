@@ -1,4 +1,6 @@
 import React from "react";
+import { modalRoot } from "../../constants/constants";
+import ReactDom from "react-dom";
 
 type DeleteModalProps = {
   title: string;
@@ -13,7 +15,10 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   handleDelete,
   onClose,
 }) => {
-  return (
+
+  if(!modalRoot) return null;
+
+  const modalContent = (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-md shadow-lg w-full max-w-md">
         <h2 className="text-xl font-bold mb-2">{title}</h2>
@@ -38,6 +43,9 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
       </div>
     </div>
   );
+
+  return ReactDom.createPortal(modalContent, modalRoot);
+  
 };
 
 export default DeleteModal;

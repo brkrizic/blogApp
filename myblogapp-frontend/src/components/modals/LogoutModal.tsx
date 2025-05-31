@@ -1,4 +1,5 @@
-import React from "react";
+import ReactDom from "react-dom";
+import { modalRoot } from "../../constants/constants";
 
 type LogoutModalProps = {
   isOpen: boolean;
@@ -9,7 +10,9 @@ type LogoutModalProps = {
 const LogoutModal = ({ isOpen, onClose, onLogout }: LogoutModalProps) => {
   if (!isOpen) return null;
 
-  return (
+  if(!modalRoot) return null;
+
+  const modalContent = (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Are you sure you want to log out?</h2>
@@ -34,6 +37,8 @@ const LogoutModal = ({ isOpen, onClose, onLogout }: LogoutModalProps) => {
       </div>
     </div>
   );
+
+  return ReactDom.createPortal(modalContent, modalRoot);
 };
 
 export default LogoutModal;
