@@ -10,8 +10,6 @@ import DashboardPage from "./pages/dashboard/DashboardPage";
 import ProfilePage from "./pages/dashboard/ProfilePage";
 import MyPostsPage from "./pages/dashboard/MyPostsPage";
 import SettingsPage from "./pages/dashboard/SettingsPage";
-import { dummyUser } from "./data/dummyUser";
-import { UserProvider } from "./contexts/UserContext";
 import { CreateEditPost } from "./pages/dashboard/CreateEditPost";
 
 

@@ -1,7 +1,7 @@
 import Header from "./base/Header.tsx";
 import Footer from "./base/Footer.tsx";
 import { Outlet, useLocation } from "react-router-dom";
-import { useCallback, useMemo, useState, type Dispatch, type SetStateAction } from "react";
+import { useCallback, type Dispatch, type SetStateAction } from "react";
 import UserSidebar from "./base/UserSidebar.tsx";
 import AuthModal from "./modals/AuthModal.tsx";
 

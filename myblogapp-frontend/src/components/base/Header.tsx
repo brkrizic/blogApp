@@ -9,8 +9,8 @@ type HeaderProps = {
 const Header = ({ setSearchQuery }: HeaderProps) => {
     const navigate = useNavigate();
 
-    const onSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
+    const onSearchClick = useCallback((searchVal: string) => {
+        setSearchQuery(searchVal);
     }, []);
 
     return (
@@ -22,7 +22,7 @@ const Header = ({ setSearchQuery }: HeaderProps) => {
                 </NavLink>
 
                 {/* Search Bar */}
-                <SearchBar onSearchChange={onSearchChange}/>
+                <SearchBar onSearchClick={onSearchClick}/>
 
 
                 {/* Navigation */}
