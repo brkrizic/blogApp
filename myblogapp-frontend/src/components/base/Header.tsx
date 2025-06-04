@@ -11,10 +11,10 @@ type HeaderProps = {
     setSearchQuery: (query: string) => void;
     user: User | null;
     isLoggedIn: boolean | null;
+    onCreatePost: () => void;
 }
 
-const Header = ({ setSearchQuery, user, isLoggedIn }: HeaderProps) => {
-    const navigate = useNavigate();
+const Header = ({ setSearchQuery, user, isLoggedIn, onCreatePost }: HeaderProps) => {
 
     const onSearchClick = useCallback((searchVal: string) => {
         setSearchQuery(searchVal);
@@ -36,7 +36,7 @@ const Header = ({ setSearchQuery, user, isLoggedIn }: HeaderProps) => {
                 <nav className="space-x-4 text-gray-700 font-medium">
                     <button 
                         className="px-4 py-2 bg-green-500 text-white border border-black rounded hover:bg-green-600 transition"
-                        onClick={() => navigate("/account/myposts/createEditPost")}    
+                        onClick={onCreatePost}    
                     >
                         + Create Post
                     </button>

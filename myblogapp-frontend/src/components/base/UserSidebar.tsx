@@ -12,7 +12,7 @@ const UserSidebar = () => {
     setIsLogoutModalOpen(false);
   }
 
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<any>();
   const navigate = useNavigate();
 
   const onLogout = useCallback(() => {

@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from "react";
-import LoginForm from "../LoginForm";
-import RegisterForm from "../RegisterForm";
+import RegisterForm from "../../RegisterForm";
 import ReactDom from "react-dom";
-import { modalRoot } from "../../constants/constants";
+import { modalRoot } from "../../../constants/constants";
 import { useDispatch } from "react-redux";
-import { login } from "../../redux/store/authSlice";
-import { registerUser } from "../../api/userApi";
+import { login } from "../../../redux/store/authSlice";
+import { registerUser } from "../../../api/userApi";
+import LoginForm from "../../LoginForm";
 
 type AuthModalProps = {
     onClose: () => void;
@@ -62,7 +62,7 @@ const AuthModal = ({ onClose, isOpen, setIsOpen, isLoggedIn }: AuthModalProps) =
           </button>
           {mode === "login" ? (
             <>
-              <LoginForm 
+              <LoginForm
                   onLogin={handleLogin} 
                   setUsername={setUsername} 
                   setPassword={setPassword}

@@ -2,33 +2,33 @@ import { useEffect, useState } from "react";
 import PostList from "../components/PostList";
 import { dummyPost } from "../data/dummyPost";
 import { useOutletContext } from "react-router-dom";
+import { usePostApi } from "../hooks/usePostApi";
+import type { PostType } from "../constants/constants";
 
-type Post = {
-    id: string;
-    title: string;
-    slug: string;
-    author: string;
-    date: string;
-    coverImage: string;
-    excerpt: string;
-    content: string;
-    tags: string[];
-  };
+
 type ContextType = {
     searchQuery: string;
 }
 
 const HomePage = () => {
-    const [posts, setPosts] = useState<Post[]>([]);
+    const [posts, setPosts] = useState<PostType[]>([]);
 
     const { searchQuery } = useOutletContext<ContextType>();
+    const { getAllPosts } = usePostApi();
 
     useEffect(() => {
         console.log("Search query updated:", searchQuery);
     }, [searchQuery]);
 
+    const fetchPosts = async () => {
+        const result = await getAllPosts();
+        console.log(result);
+        setPosts(result);
+    }
+
     useEffect(() => {
-        setPosts([dummyPost])
+        fetchPosts();
+        //setPosts([dummyPost])
     }, []);
 
     return(

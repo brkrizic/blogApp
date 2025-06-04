@@ -1,15 +1,5 @@
 import { Link } from "react-router-dom";
-
-type PostType = {
-    id: string;
-    title: string;
-    slug: string;
-    author: string;
-    date: string;
-    coverImage: string;
-    excerpt: string;
-    tags: string[];
-  };
+import type { PostType } from "../constants/constants";
 
   type PostProps = {
     post: PostType;
@@ -23,7 +13,7 @@ const Post = ({post}: PostProps) => {
             className="bg-white border border-gray-200 rounded-lg shadow hover:shadow-lg transition overflow-hidden flex flex-col"
             >
             <img
-                src={post.coverImage}
+                src={post.imageUrl}
                 alt={post.title}
                 className="w-full h-48 object-cover"
             />
@@ -31,9 +21,9 @@ const Post = ({post}: PostProps) => {
                 <div>
                 <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
                 <p className="text-sm text-gray-500 mb-3">
-                    By {post.author} • {new Date(post.date).toLocaleDateString()}
+                    By {post.user?.username} • {new Date(post.createdAt).toLocaleDateString()}
                 </p>
-                <p className="text-gray-700 text-sm">{post.excerpt}</p>
+                <p className="text-gray-700 text-sm">{post.content}</p>
                 </div>
                 <div className="mt-4">
                 <Link

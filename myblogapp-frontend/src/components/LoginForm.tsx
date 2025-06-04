@@ -1,7 +1,6 @@
 import type { FormEvent } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
-interface LoginModalProps {
+interface LoginFormProps {
   onLogin: (e: FormEvent) => void;
   setUsername: (val: string) => void; 
   setPassword: (val: string) => void;
@@ -9,7 +8,7 @@ interface LoginModalProps {
   password: string;
 }
 
-const LoginModal = ({ onLogin, username, password, setUsername, setPassword }: LoginModalProps) => {
+const LoginForm = ({ onLogin, username, password, setUsername, setPassword }: LoginFormProps) => {
 
   return (
       <>
@@ -55,4 +54,4 @@ const LoginModal = ({ onLogin, username, password, setUsername, setPassword }: L
   );
 };
 
-export default LoginModal;
+export default LoginForm;
