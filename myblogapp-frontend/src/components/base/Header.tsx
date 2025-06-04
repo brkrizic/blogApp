@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import SearchBar from "../SearchBar";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 type User = {
     id: number | null;

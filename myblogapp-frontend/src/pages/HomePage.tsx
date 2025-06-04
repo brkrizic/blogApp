@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import PostList from "../components/PostList";
-import { dummyPost } from "../data/dummyPost";
 import { useOutletContext } from "react-router-dom";
 import { usePostApi } from "../hooks/usePostApi";
 import type { PostType } from "../constants/constants";

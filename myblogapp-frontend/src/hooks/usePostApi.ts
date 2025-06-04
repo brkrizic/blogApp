@@ -23,9 +23,9 @@ export const usePostApi = () => {
     const getPostById = async (id: number) => {
         try {
             const response = await axios.get(`${API_URL_POST}/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                // headers: {
+                //     Authorization: `Bearer ${token}`,
+                // },
             });
             console.log(response);
             return response.data;

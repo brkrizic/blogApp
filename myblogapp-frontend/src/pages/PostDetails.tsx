@@ -1,13 +1,11 @@
 import { useParams } from "react-router-dom";
-import { dummyPost } from "../data/dummyPost";
 import { usePostApi } from "../hooks/usePostApi";
 import { useEffect, useState } from "react";
 import { type PostType } from "../constants/constants";
 
 
 const PostDetails = () => {
-    const { id } = useParams(); // you'd normally fetch data based on this slug
-    const postDummy = dummyPost; // Replace this with actual fetch logic
+    const { id } = useParams();
     const [post, setPost] = useState<PostType>();
 
     const { getPostById } = usePostApi();
