@@ -1,9 +1,11 @@
 import Header from "./base/Header.tsx";
 import Footer from "./base/Footer.tsx";
 import { Outlet, useLocation } from "react-router-dom";
-import { useCallback, type Dispatch, type SetStateAction } from "react";
+import { useCallback, useEffect, type Dispatch, type SetStateAction } from "react";
 import UserSidebar from "./base/UserSidebar.tsx";
 import AuthModal from "./modals/AuthModal.tsx";
+import { useSelector } from "react-redux";
+import type { RootState } from "../redux/store/store.ts";
 
 type LayoutProps = {
   isModalOpen: boolean;
@@ -15,6 +17,16 @@ type LayoutProps = {
 const Layout = ({ isModalOpen, setIsModalOpen, searchQuery, setSearchQuery }: LayoutProps) => {
   const location = useLocation();
   const showSidebar = location.pathname.startsWith("/account");
+
+  const user = useSelector((state: RootState) => state.auth.user) || null;
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn) || null;
+
+
+  useEffect(() => {
+    if(isLoggedIn){
+      setIsModalOpen(false);
+    }
+  }, [user, isLoggedIn]);
 
   const onModalClose = useCallback(() => {
     setIsModalOpen(false);
@@ -30,7 +42,7 @@ const Layout = ({ isModalOpen, setIsModalOpen, searchQuery, setSearchQuery }: La
 
       {/* Content area with conditional left margin */}
       <div className={`flex flex-col flex-grow w-full ${showSidebar ? "ml-64" : ""}`}>
-        <Header setSearchQuery={setSearchQuery}/>
+        <Header setSearchQuery={setSearchQuery} user={user} isLoggedIn={isLoggedIn}/>
         <main className="flex-grow container mx-auto px-4 py-8">
           <Outlet context={{ searchQuery }}/>
         </main>
@@ -38,7 +50,11 @@ const Layout = ({ isModalOpen, setIsModalOpen, searchQuery, setSearchQuery }: La
         <Footer />
       </div>
 
-      <AuthModal onClose={onModalClose} isOpen={isModalOpen}/>
+      <AuthModal 
+          onClose={onModalClose} 
+          isOpen={isModalOpen} 
+          setIsOpen={setIsModalOpen} 
+          isLoggedIn={isLoggedIn}/>
     </div>
   );
 };

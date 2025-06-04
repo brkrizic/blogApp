@@ -1,24 +1,56 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import LoginForm from "../LoginForm";
 import RegisterForm from "../RegisterForm";
 import ReactDom from "react-dom";
 import { modalRoot } from "../../constants/constants";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../redux/store/store";
+import { login } from "../../redux/store/authSlice";
+import { registerUser } from "../../api/userApi";
 
 type AuthModalProps = {
     onClose: () => void;
     isOpen: boolean;
+    setIsOpen: (val: boolean) => void;
+    isLoggedIn: boolean | null;
 }
 
-const AuthModal = ({ onClose, isOpen }: AuthModalProps) => {
+const AuthModal = ({ onClose, isOpen, setIsOpen, isLoggedIn }: AuthModalProps) => {
     if(!isOpen) return null;
+    if(isLoggedIn) return null;
 
     const [mode, setMode] = useState<"login" | "register">("login");
+    const [fullName, setFullName] = useState<string>("");
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+
+    const dispatch = useDispatch<AppDispatch>();
 
     const toggleMode = () => {
         setMode(prev => (prev === "login" ? "register" : "login"));
     };
 
     if(!modalRoot) return null;
+
+    const handleLogin = (e: FormEvent) => {
+      e.preventDefault();
+      dispatch(login({ username, password }))
+      .unwrap()
+      .then(() => {
+        setIsOpen(false);
+      })
+      .catch((err) => {
+        console.error("Login failed:", err);
+      });
+    }
+
+    const handleRegister = (e: FormEvent) => {
+      e.preventDefault();
+      registerUser({ fullName, username, password })
+      .then(() => {
+        setMode("login");
+      })
+    }
 
     const modalContent = (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -31,7 +63,13 @@ const AuthModal = ({ onClose, isOpen }: AuthModalProps) => {
           </button>
           {mode === "login" ? (
             <>
-              <LoginForm />
+              <LoginForm 
+                  onLogin={handleLogin} 
+                  setUsername={setUsername} 
+                  setPassword={setPassword}
+                  username={username}
+                  password={password}
+                  />
               <p className="text-sm text-gray-500 mt-4">
                 Don’t have an account?{" "}
                 <button className="text-blue-500 underline" onClick={toggleMode}>
@@ -41,7 +79,15 @@ const AuthModal = ({ onClose, isOpen }: AuthModalProps) => {
             </>
           ) : (
             <>
-              <RegisterForm />
+              <RegisterForm 
+                onRegister={handleRegister}
+                fullname={fullName}
+                username={username}
+                password={password}
+                setFullname={setFullName}
+                setUsername={setUsername}
+                setPassword={setPassword}
+              />
               <p className="text-sm text-gray-500 mt-4">
                 Already have an account?{" "}
                 <button className="text-blue-500 underline" onClick={toggleMode}>

@@ -81,7 +81,6 @@ public class User {
                 "id=" + id +
                 ", fullName='" + fullName + '\'' +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
                 '}';
     }
 }

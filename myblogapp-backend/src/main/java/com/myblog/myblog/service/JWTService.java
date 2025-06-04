@@ -1,5 +1,6 @@
 package com.myblog.myblog.service;
 
+import com.myblog.myblog.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -35,6 +36,7 @@ public class JWTService {
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
+
         return Jwts.builder()
                 .claims()
                 .add(claims)

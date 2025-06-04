@@ -1,6 +1,7 @@
 package com.myblog.myblog.controller;
 
 
+import com.myblog.myblog.dto.LoginResponse;
 import com.myblog.myblog.model.User;
 import com.myblog.myblog.service.FollowService;
 import com.myblog.myblog.service.UserService;
@@ -24,8 +25,17 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user){
-        return userService.verify(user);
+    public ResponseEntity<LoginResponse> login(@RequestBody User user){
+        String token = userService.verify(user);
+        User foundUser = userService.findUserByUsername(user.getUsername());
+        LoginResponse response = new LoginResponse(foundUser, token);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/getUser")
+    public ResponseEntity<User> getUser(@RequestParam String username){
+        User user = userService.findUserByUsername(username);
+        return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/{id}")

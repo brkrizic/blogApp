@@ -6,7 +6,6 @@ const PostDetails = () => {
     const { id } = useParams(); // you'd normally fetch data based on this slug
     const post = dummyPost; // Replace this with actual fetch logic
     
-    console.log(id);
     
     return (
       <div className="container mx-auto px-4 py-8 max-w-3xl text-gray-800">

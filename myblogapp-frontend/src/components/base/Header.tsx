@@ -2,11 +2,18 @@ import { useCallback } from "react";
 import SearchBar from "../SearchBar";
 import { NavLink, useNavigate } from "react-router-dom";
 
-type HeaderProps = {
-    setSearchQuery: (query: string) => void;
+type User = {
+    id: number | null;
+    username: string | undefined;
 }
 
-const Header = ({ setSearchQuery }: HeaderProps) => {
+type HeaderProps = {
+    setSearchQuery: (query: string) => void;
+    user: User | null;
+    isLoggedIn: boolean | null;
+}
+
+const Header = ({ setSearchQuery, user, isLoggedIn }: HeaderProps) => {
     const navigate = useNavigate();
 
     const onSearchClick = useCallback((searchVal: string) => {
@@ -48,11 +55,13 @@ const Header = ({ setSearchQuery }: HeaderProps) => {
                     }>
                         Posts
                     </NavLink> */}
-                    <NavLink to="/account" className={({ isActive }) => 
-                        isActive ? "text-blue-500" : "hover:text-blue-500 transition"
-                    }>
-                        Account
-                    </NavLink>
+                    {user && isLoggedIn && (
+                        <NavLink to="/account" className={({ isActive }) => 
+                            isActive ? "text-blue-500" : "hover:text-blue-500 transition"
+                        }>
+                            Account
+                        </NavLink>
+                    )}
                 </nav>
             </div>
         </header>
