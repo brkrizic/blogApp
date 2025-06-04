@@ -1,9 +1,27 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { usePostApi } from "../../hooks/usePostApi";
 
 export const CreateEditPost = () => {
   const postId = useParams(); // Get route param, e.g. /posts/:postId
   const [isCreateMode, setIsCreateMode] = useState(false);
+
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [status, setStatus] = useState<"DRAFT" | "PUBLIC">("DRAFT");
+  const [imageUrl, setImageUrl] = useState("");
+
+  const { createPost } = usePostApi();
+
+  const handleCreatePost = async () => {
+    const postObj = {
+      title: title,
+      content: content,
+      imageUrl: imageUrl
+    }
+    
+    await createPost(postObj);
+  }
 
   console.log(postId);
 
@@ -23,7 +41,12 @@ export const CreateEditPost = () => {
       <form className="space-y-4">
         <div>
           <label className="block font-medium">Title</label>
-          <input type="text" className="w-full border px-3 py-2 rounded" />
+          <input 
+            type="text" 
+            className="w-full border px-3 py-2 rounded"  
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}  
+          />
         </div>
 
         <div>
@@ -33,12 +56,21 @@ export const CreateEditPost = () => {
 
         <div>
           <label className="block font-medium">Image</label>
-          <input type="file" className="w-full border px-3 py-2 rounded" />
+          <input 
+            type="file" 
+            className="w-full border px-3 py-2 rounded" 
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}  
+          />
         </div>
 
         <div>
-          <label className="block font-medium">Excerpt</label>
-          <textarea className="w-full border px-3 py-2 rounded" />
+          <label className="block font-medium">Content</label>
+          <textarea 
+            className="w-full border px-3 py-2 rounded" 
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
         </div>
 
         <div>
@@ -52,7 +84,7 @@ export const CreateEditPost = () => {
         </div>
 
         {isCreateMode ? (
-            <button>Create</button>
+            <button onClick={handleCreatePost}>Create</button>
         ) : (
             <button>Edit</button>
         )}

@@ -34,14 +34,27 @@ export const usePostApi = () => {
         }
     }
 
-    const createPost = (postData: Object) => {
-        console.log("post created", postData);
+    const createPost = async (postData: Object) => {
+        try {
+            const response = await axios.post(`${API_URL_POST}`, postData, {
+                headers: {
+                     Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            
+        }
     };
+
+    const updatePost = async (postData: Object) => {
+        console.log("updated");
+    }
 
     const deletePost = (postId: Number) => {
         console.log("post deleted", postId);
     }
 
 
-    return ({ getAllPosts, getPostById, createPost, deletePost});
+    return ({ getAllPosts, getPostById, createPost, updatePost, deletePost});
 }

@@ -1,7 +1,7 @@
 import Header from "./base/Header.tsx";
 import Footer from "./base/Footer.tsx";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useCallback, useEffect, useLayoutEffect, type Dispatch, type SetStateAction } from "react";
+import { useCallback, useEffect, type Dispatch, type SetStateAction } from "react";
 import UserSidebar from "./base/UserSidebar.tsx";
 import AuthModal from "./modals/AuthModal.tsx";
 import { useSelector } from "react-redux";
@@ -23,18 +23,11 @@ const Layout = ({ isModalOpen, setIsModalOpen, searchQuery, setSearchQuery }: La
   const user = useSelector((state: RootState) => state.auth.user) || null;
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn) || null;
 
-  useLayoutEffect(() => {
-    if(isModalOpen){
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'visible';
-    }
-  }, [isModalOpen]);
-
   const handleCreatePost = useCallback(() => {
     if(!user && !isLoggedIn){
       setIsModalOpen(true);
     } else {
+      setIsModalOpen(false);
       navigate("/account/myposts/createEditPost");
     }
   }, [user, isLoggedIn]);
@@ -48,6 +41,7 @@ const Layout = ({ isModalOpen, setIsModalOpen, searchQuery, setSearchQuery }: La
 
   const onModalClose = useCallback(() => {
     setIsModalOpen(false);
+    document.body.style.overflow = 'visible';
   }, [setIsModalOpen]);
 
   //console.log(searchQuery);

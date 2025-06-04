@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useLayoutEffect, useState, type FormEvent } from "react";
 import LoginForm from "../LoginForm";
 import RegisterForm from "../RegisterForm";
 import ReactDom from "react-dom";
@@ -29,6 +29,10 @@ const AuthModal = ({ onClose, isOpen, setIsOpen, isLoggedIn }: AuthModalProps) =
         setMode(prev => (prev === "login" ? "register" : "login"));
     };
 
+    useLayoutEffect(() => {
+      document.body.style.overflow = 'hidden';
+    }, []);
+
     if(!modalRoot) return null;
 
     const handleLogin = (e: FormEvent) => {
@@ -37,6 +41,7 @@ const AuthModal = ({ onClose, isOpen, setIsOpen, isLoggedIn }: AuthModalProps) =
       .unwrap()
       .then(() => {
         setIsOpen(false);
+        document.body.style.overflow = 'visible';
       })
       .catch((err: any) => {
         console.error("Login failed:", err);
