@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import SearchBar from "../SearchBar";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 type User = {
     id: number | null;
@@ -15,8 +15,10 @@ type HeaderProps = {
 }
 
 const Header = ({ setSearchQuery, user, isLoggedIn, onCreatePost }: HeaderProps) => {
+    const navigate = useNavigate();
 
     const onSearchClick = useCallback((searchVal: string) => {
+        navigate("/");
         setSearchQuery(searchVal);
     }, []);
 
@@ -30,7 +32,6 @@ const Header = ({ setSearchQuery, user, isLoggedIn, onCreatePost }: HeaderProps)
 
                 {/* Search Bar */}
                 <SearchBar onSearchClick={onSearchClick}/>
-
 
                 {/* Navigation */}
                 <nav className="space-x-4 text-gray-700 font-medium">
@@ -56,7 +57,7 @@ const Header = ({ setSearchQuery, user, isLoggedIn, onCreatePost }: HeaderProps)
                         Posts
                     </NavLink> */}
                     {user && isLoggedIn && (
-                        <NavLink to="/account" className={({ isActive }) => 
+                        <NavLink to="/account/dashboard" className={({ isActive }) => 
                             isActive ? "text-blue-500" : "hover:text-blue-500 transition"
                         }>
                             Account

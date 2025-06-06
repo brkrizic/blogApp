@@ -13,8 +13,7 @@ export type RegisterPayload = {
 };
 
 export type LoginResponse = {
-  userId: number;
-  token: string;
+  user: Object;
 };
 
 export type RegisterResponse = {
@@ -24,8 +23,14 @@ export type RegisterResponse = {
     }
 }
 
+export type CheckAuthResponse = {
+    id: number;
+}
+
 export const loginUser = async (payload: LoginPayload): Promise<LoginResponse> => {
-  const response = await axios.post(`${baseUrl}/api/users/login`, payload);
+  const response = await axios.post(`${baseUrl}/api/users/login`, payload, {
+    withCredentials: true,
+  });
   console.log(response);
   return response.data;
 };
@@ -34,4 +39,27 @@ export const registerUser = async (payload: RegisterPayload): Promise<RegisterRe
     const response = await axios.post(`${baseUrl}/api/users/register`, payload);
     console.log(response);
     return response.data;
+};
+
+export const logoutUser = async (): Promise<any> => {
+    const response = await axios.post(`${baseUrl}/private/logout`, {}, {
+        withCredentials: true
+    });
+    console.log(response);
+    return response.data;
 }
+
+export const checkAuthApi = async (): Promise<CheckAuthResponse> => {
+    const token = localStorage.getItem("token");
+    console.log("token: " + token);
+    const response = await axios.get(`${baseUrl}/api/auth/check-session`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    console.log(response);
+    if(!response){
+        throw new Error("Session expired or unauthorized");
+    }
+    return await response.data.json();
+}; 

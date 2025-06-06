@@ -18,7 +18,7 @@ public class Post {
 
     private String status; // e.g., "DRAFT", "PUBLISHED"
 
-    private String imageUrl; // Path or full URL to image
+    private String image; // Path or full URL to image
 
     private LocalDateTime createdAt;
 
@@ -49,9 +49,9 @@ public class Post {
 
     public void setStatus(String status) { this.status = status; }
 
-    public String getImageUrl() { return imageUrl; }
+    public String getImage() { return image; }
 
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public void setImage(String image) { this.image = image; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
 

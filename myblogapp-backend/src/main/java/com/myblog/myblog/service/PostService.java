@@ -28,24 +28,30 @@ public class PostService {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new RuntimeException("User not authenticated");
         }
+        String username = authentication.getName();
+        System.out.println(username);
+        //This print wrong username
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
         return user.getId();
     }
 
     // Create or update a post
     public Post savePost(Post post) {
-        Long userId = getCurrentUserId();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
 
-        User user = userRepo.findById(userId)
-                        .orElseThrow(() -> new RuntimeException("User Not Found"));
+        System.out.println(userPrincipal);
 
+        User user = new User(userPrincipal.getId(), userPrincipal.getUsername());
         post.setUser(user);
 
-        user.getPosts().add(post);
+        Post savedPost = postRepo.save(post);
+
+        user.getPosts().add(savedPost);
 
         userRepo.save(user);
 
-        return post;
+        return savedPost;
     }
 
     // Get a post by ID
@@ -61,6 +67,11 @@ public class PostService {
     // Get posts by user ID
     public List<Post> getPostsByUserId(Long userId) {
         return postRepo.findByUserId(userId);
+    }
+
+    public long getPostCount(){
+        Long userId = getCurrentUserId();
+        return postRepo.countByUserId(userId);
     }
 
     // Get posts by status
@@ -82,4 +93,29 @@ public class PostService {
     public void deletePost(Long id) {
         postRepo.deleteById(id);
     }
+
+    // Update post
+    public Post updatePost(Long id, Post post) {
+        Long userId = getCurrentUserId();
+
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User Not Found"));
+
+        Post existingPost = postRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post Not Found"));
+
+        if (!existingPost.getUser().getId().equals(userId)) {
+            throw new RuntimeException("User not authorized to update this post");
+        }
+
+        // Update fields you want to allow to be changed
+        existingPost.setTitle(post.getTitle());
+        existingPost.setContent(post.getContent());
+        existingPost.setImage(post.getImage());
+        existingPost.setStatus(post.getStatus());
+        // ... any other fields
+
+        return postRepo.save(existingPost);
+    }
+
 }

@@ -1,35 +1,52 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { usePostApi } from "../../hooks/usePostApi";
-
-// Dummy data for user's posts
-type Post = {
-  id: string;
-  title: string;
-  date: string;
-  excerpt: string;
-};
+import { type PostType } from "../../constants/constants";
+import { useAuth } from "../../hooks/useAuth";
+import DeleteModal from "../../components/modals/DeleteModal";
+import PostInfo from "../../components/PostInfo";
 
 const MyPostsPage = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<PostType[]>([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<number | undefined>(undefined);
 
-  const { deletePost } = usePostApi();
+  // Get all API functions from one usePostApi call
+  const { getPostByUserId, deletePost } = usePostApi();
+  const { user } = useAuth();
 
-  // Fetch posts data for the logged-in user (Replace with API call)
+  // Stable fetch function, update posts
+  const fetchPostsByUser = useCallback(async () => {
+    if (user?.id) {
+      const result = await getPostByUserId(user.id);
+      console.log(result);
+      setPosts(result);
+    }
+  }, [user?.id, getPostByUserId]);
+
+  // Fetch posts on mount and when user changes
   useEffect(() => {
-    // This is just dummy data for the purpose of the example
-    setPosts([
-      { id: "1", title: "How to Build a React App", date: "2025-05-01", excerpt: "A detailed guide on building a React app." },
-      { id: "2", title: "Introduction to TypeScript", date: "2025-05-05", excerpt: "Getting started with TypeScript." },
-      { id: "3", title: "CSS Grid vs Flexbox", date: "2025-05-10", excerpt: "Comparing CSS Grid and Flexbox." }
-    ]);
-  }, []);
+    fetchPostsByUser();
+  }, [fetchPostsByUser]);
 
-  // Dummy delete function (replace with API call)
-  const handleDelete = async (postId: Number) => {
-    // Logic to delete the post from backend can be added here
-    const result = await deletePost(postId);
+  // Delete post and refresh list
+  const onDelete = async (postId: number) => {
+      await deletePost(postId);
+      setIsDeleteModalOpen(false);
+      fetchPostsByUser(); // Refresh after delete
+      document.body.style.overflow = "visible";
+    };
+
+  const deleteClick = (postId: number) => {
+    setSelectedPost(postId);
+    setIsDeleteModalOpen(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const handleClose = () => {
+    setIsDeleteModalOpen(false);
+    document.body.style.overflow = "visible";
   };
 
   return (
@@ -54,11 +71,13 @@ const MyPostsPage = () => {
                 </h2>
 
                 {/* Post Metadata */}
-                <p className="text-sm text-gray-500">{new Date(post.date).toLocaleDateString()}</p>
+                <p className="text-sm text-gray-500">
+                  {new Date(post.createdAt).toLocaleDateString()}
+                </p>
               </div>
 
               {/* Excerpt */}
-              <p className="text-gray-700 mt-2">{post.excerpt}</p>
+              <p className="text-gray-700 mt-2">{post.content}</p>
 
               {/* Post Actions */}
               <div className="flex justify-end space-x-4 mt-4">
@@ -73,17 +92,27 @@ const MyPostsPage = () => {
 
                 {/* Delete Button */}
                 <button
-                  onClick={() => handleDelete(post.id)}
+                  onClick={() => deleteClick(post.id)}
                   className="text-red-600 hover:underline flex items-center"
                 >
                   <FaTrashAlt className="mr-1" />
                   Delete
                 </button>
               </div>
+              <PostInfo/>
             </div>
           ))}
         </div>
       </div>
+
+      <DeleteModal
+        title={"Delete Post"}
+        description={"Are you sure for delete?"}
+        onClose={handleClose}
+        isOpen={isDeleteModalOpen}
+        selectedPost={selectedPost}
+        handleDelete={onDelete}
+      />
     </div>
   );
 };

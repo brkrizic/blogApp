@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import LogoutModal from "../modals/LogoutModal";
 import { logout } from "../../redux/store/authSlice";
 import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../redux/store/store";
 
 const UserSidebar = () => {
 
@@ -12,7 +13,7 @@ const UserSidebar = () => {
     setIsLogoutModalOpen(false);
   }
 
-  const dispatch = useDispatch<any>();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const onLogout = useCallback(() => {

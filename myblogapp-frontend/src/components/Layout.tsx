@@ -29,6 +29,7 @@ const Layout = ({ isModalOpen, setIsModalOpen, searchQuery, setSearchQuery }: La
     } else {
       setIsModalOpen(false);
       navigate("/account/myposts/createEditPost");
+      window.location.reload();
     }
   }, [user, isLoggedIn]);
 

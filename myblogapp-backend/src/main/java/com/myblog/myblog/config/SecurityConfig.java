@@ -1,6 +1,8 @@
 package com.myblog.myblog.config;
 
 
+import com.myblog.myblog.service.MyUserDetailsService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,23 +22,32 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Autowired
-    private JwtFilter jwtFilter;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private MyUserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        return http .cors(Customizer.withDefaults())
+        return http
+                .logout(logout -> logout
+                        .logoutUrl("/private/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        })
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
+                )
+                .cors(Customizer.withDefaults())
                 .csrf(customizer -> customizer.disable()).
                 authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/users/login", "/api/users/register", "/api/posts/posts", "/api/posts/{id}").permitAll()
-                        .anyRequest().authenticated()).
+                        .requestMatchers("/api/users/login", "/api/users/register", "/api/posts/posts", "/api/posts/{id}", "/images/**").permitAll()
+                        .requestMatchers("/api/posts/private/**", "/api/users/private/**").authenticated()
+                        .anyRequest().permitAll()).
                 httpBasic(Customizer.withDefaults()).
-                sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                //.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
 
 

@@ -2,25 +2,18 @@ package com.myblog.myblog.service;
 
 
 import com.myblog.myblog.model.User;
-import com.myblog.myblog.model.UserPrincipal;
 import com.myblog.myblog.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
-
-    @Autowired
-    private JWTService jwtService;
-
-    @Autowired
-    AuthenticationManager authManager;
 
     @Autowired
     private UserRepo repo;
@@ -34,17 +27,13 @@ public class UserService {
         return user;
     }
 
-    public String verify(User user) {
-        Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(user.getUsername());
-        } else {
-            return "fail";
-        }
-    }
-
     public User findUserByUsername(String username){
         return repo.findByUsername(username);
+    }
+
+    public User findUserById(Long id){
+        User user = repo.findById(id).orElseThrow(null);
+        return user;
     }
 
     public void deleteUser(Long id){

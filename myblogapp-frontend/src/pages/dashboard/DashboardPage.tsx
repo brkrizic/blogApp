@@ -1,19 +1,35 @@
-import React from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUserAlt, FaCommentAlt, FaFileAlt } from "react-icons/fa";
-import { useUser } from "../../contexts/UserContext";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../redux/store/store";
+import { usePostApi } from "../../hooks/usePostApi";
 
-type DashboardPageProps = {
-  user: {
-    posts: number,
-    comments: number,
-    users: number
-  }
-}
 
 const DashboardPage = () => {
+  const id  = useSelector((state: RootState) => state.auth?.user?.id);
+  const { postsCount } = usePostApi();
 
-  const { user, setUser } = useUser();
+  const [countPost, setCountPost] = useState<number>();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const fetchCountPosts = useCallback(async () => {
+    if(id){
+        const result = await postsCount();
+        console.log(result);
+        setCountPost(result);
+    }
+
+  }, [id]);
+
+  console.log(countPost);
+  
+  useEffect(() => {
+    fetchCountPosts();
+  }, [fetchCountPosts]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -26,7 +42,7 @@ const DashboardPage = () => {
             <FaFileAlt className="text-blue-600 text-4xl mr-4" />
             <div>
               <h3 className="text-xl font-semibold text-gray-700">Posts</h3>
-              <p className="text-gray-500">{user?.posts} Posts</p>
+              <p className="text-gray-500">{countPost} Posts</p>
             </div>
           </div>
 
@@ -34,15 +50,15 @@ const DashboardPage = () => {
             <FaCommentAlt className="text-green-600 text-4xl mr-4" />
             <div>
               <h3 className="text-xl font-semibold text-gray-700">Comments</h3>
-              <p className="text-gray-500">{user?.comments} Comments</p>
+              <p className="text-gray-500">{countPost} Comments</p>
             </div>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow-lg flex items-center">
             <FaUserAlt className="text-purple-600 text-4xl mr-4" />
             <div>
-              <h3 className="text-xl font-semibold text-gray-700">Users</h3>
-              <p className="text-gray-500">{user?.users} Users</p>
+              <h3 className="text-xl font-semibold text-gray-700">Followers</h3>
+              <p className="text-gray-500">{countPost} Followers</p>
             </div>
           </div>
         </div>

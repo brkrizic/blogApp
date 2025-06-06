@@ -20,4 +20,7 @@ public interface PostRepo extends JpaRepository<Post, Long> {
 
     // Optional: Recent posts
     List<Post> findTop10ByOrderByCreatedAtDesc();
+
+    // CountUser
+    long countByUserId(Long id);
 }

@@ -12,7 +12,7 @@ export interface PostType {
     slug: string;
     user: UserType;
     createdAt: string;
-    imageUrl: string;
+    image: string;
     content: string;
     tags: string[];
 }

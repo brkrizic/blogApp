@@ -16,12 +16,11 @@ const HomePage = () => {
     const { getAllPosts } = usePostApi();
 
     useEffect(() => {
-        console.log("Search query updated:", searchQuery);
+        //console.log("Search query updated:", searchQuery);
     }, [searchQuery]);
 
     const fetchPosts = async () => {
         const result = await getAllPosts();
-        console.log(result);
         setPosts(result);
     }
 

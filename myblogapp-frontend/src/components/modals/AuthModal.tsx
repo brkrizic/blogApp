@@ -46,7 +46,7 @@ const AuthModal = ({ onClose, isOpen, setIsOpen, isLoggedIn }: AuthModalProps) =
       .catch((err: any) => {
         console.error("Login failed:", err);
       });
-    }
+    };
 
     const handleRegister = (e: FormEvent) => {
       e.preventDefault();

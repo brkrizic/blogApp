@@ -1,22 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { modalRoot } from "../../constants/constants";
 import ReactDom from "react-dom";
 
 type DeleteModalProps = {
   title: string;
   description: string;
-  handleDelete: () => void;
+  isOpen: boolean;
+  selectedPost: number | undefined;
+  handleDelete: (postId: number) => void;
   onClose?: () => void; // optional: to close the modal
 };
 
 const DeleteModal: React.FC<DeleteModalProps> = ({
   title,
   description,
+  selectedPost,
+  isOpen,
   handleDelete,
   onClose,
 }) => {
 
+  if(!isOpen) return null;
   if(!modalRoot) return null;
+  if(!selectedPost) return null;
 
   const modalContent = (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -33,12 +39,13 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
               Cancel
             </button>
           )}
-          <button
-            onClick={handleDelete}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Delete
-          </button>
+          {selectedPost !== undefined && (
+            <button 
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition" 
+                    onClick={() => handleDelete(selectedPost)}>
+              Confirm Delete
+            </button>
+          )}
         </div>
       </div>
     </div>
