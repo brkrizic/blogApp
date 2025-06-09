@@ -1,27 +1,77 @@
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useOutletContext, useParams } from "react-router-dom";
 import { usePostApi } from "../hooks/usePostApi";
-import { useEffect, useState } from "react";
-import { type PostType } from "../constants/constants";
+import { useCallback, useEffect, useState } from "react";
+import { API_URL_POST, type PostType } from "../constants/constants";
 import Comments from "../components/Comments";
 import PostInfo from "../components/PostInfo";
+import { useSelector } from "react-redux";
+import type { RootState } from "../redux/store/store";
 
+type ContextType = {
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 const PostDetails = () => {
     const { id } = useParams();
     const [post, setPost] = useState<PostType>();
+    const [likes, setLikes] = useState<number>(0);
+    const [commentsCount, setCommetsCount] = useState<number>(0);
+    const [comments, setComments] = useState<any[]>([]);
+    const [isLiked, setIsLiked] = useState<boolean>(false);
 
-    const { getPostById } = usePostApi();
+    const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn) || null;
+    const { setIsModalOpen } = useOutletContext<ContextType>();
 
-    const fetchPost = async (id: string | undefined) => {
+    const { getPostById, postLikePost, postUnlikePost, getComments, addComment } = usePostApi();
+
+    const fetchPost = async () => {
       if(!id) return null;
 
       const postId = Number(id);
       const result = await getPostById(postId);
-      setPost(result);
+      setPost(result.post);
+      setLikes(result.likes);
+      setCommetsCount(result.comments);
     };
 
     useEffect(() => {
-      fetchPost(id);
+      fetchPost();
+    }, [isLiked]);
+
+    const getPostComments = async () => {
+      const result = await getComments(Number(id));
+      console.log(result);
+      setComments(result);
+    };
+
+    const likePost = async () => {
+      if(!isLiked){
+        const result = await postLikePost(Number(id));
+        setIsLiked(true);
+      } else {
+        const result = await postUnlikePost(Number(id));
+        setIsLiked(false);
+      }
+    };
+
+    const handleSubmitComment = useCallback(async (e: React.FormEvent, currentComment: string) => {
+      e.preventDefault();
+
+      if(!isLoggedIn){
+        setIsModalOpen(true);
+      }
+
+      if (!currentComment.trim()) return;
+
+      await addComment(Number(id), currentComment);
+      await getPostComments();
+      
+      fetchPost();
+    }, [addComment, id]);
+
+    useEffect(() => {
+      fetchPost();
+      getPostComments();
     }, [id]);
 
     if(!post) return <div>Loading...</div>
@@ -67,8 +117,8 @@ const PostDetails = () => {
             ))}
           </div> */}
         </div>
-        <PostInfo/>
-        <Comments/>
+        <PostInfo postLikes={likes} postComments={commentsCount} likePost={likePost} isLiked={isLiked}/>
+        <Comments comments={comments} handleSubmitComment={handleSubmitComment}/>
       </div>
     );
 }

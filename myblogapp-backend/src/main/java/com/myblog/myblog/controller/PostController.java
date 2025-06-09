@@ -1,13 +1,16 @@
 package com.myblog.myblog.controller;
 
+import com.myblog.myblog.dto.PostWithLikesDTO;
 import com.myblog.myblog.model.Comment;
 import com.myblog.myblog.model.Post;
+import com.myblog.myblog.model.PostLike;
 import com.myblog.myblog.model.UserPrincipal;
 import com.myblog.myblog.service.CommentService;
 import com.myblog.myblog.service.MyUserDetailsService;
 import com.myblog.myblog.service.PostLikeService;
 import com.myblog.myblog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Fallback;
 import org.springframework.context.annotation.Role;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -87,9 +90,14 @@ public class PostController {
 
     // Get post by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
+    public ResponseEntity<PostWithLikesDTO> getPostById(@PathVariable Long id) {
         Optional<Post> post = postService.getPostById(id);
-        return post.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        int likesCount = postLikeService.getLikesByPost(id).size();
+        int commentCount = commentService.getCommentsByPostId(id).size();
+
+        PostWithLikesDTO dto = new PostWithLikesDTO(post.get(), likesCount, commentCount);
+
+        return ResponseEntity.ok(dto);
     }
 
     // Get all posts
@@ -137,14 +145,14 @@ public class PostController {
     }
 
     //Dislike Post
-    @DeleteMapping("/private/{postId}/like")
+    @DeleteMapping("/private/{postId}/unlike")
     public ResponseEntity<?> unlikePost(@PathVariable Long postId){
         postLikeService.unlikePost(postId);
         return ResponseEntity.ok("Unliked Post");
     }
 
     // Make a comment
-    @PostMapping("/comments/{postId}")
+    @PostMapping("/private/comments/{postId}")
     public ResponseEntity<Comment> addComment(@PathVariable Long postId,
                                               @RequestBody Map<String, String> body) {
         String content = body.get("content");
@@ -161,6 +169,12 @@ public class PostController {
     @GetMapping("/private/postCount")
     public ResponseEntity<Long> getPostCount(){
         return ResponseEntity.ok(postService.getPostCount());
+    }
+
+    @GetMapping("/postLikes/{postId}")
+    public ResponseEntity<Integer> getLikesByPost(@PathVariable Long postId){
+        Integer likes = postLikeService.getLikesByPost(postId).size();
+        return ResponseEntity.ok(likes);
     }
 
 }

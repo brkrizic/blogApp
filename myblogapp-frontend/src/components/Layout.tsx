@@ -57,7 +57,7 @@ const Layout = ({ isModalOpen, setIsModalOpen, searchQuery, setSearchQuery }: La
       <div className={`flex flex-col flex-grow w-full ${showSidebar ? "ml-64" : ""}`}>
         <Header setSearchQuery={setSearchQuery} user={user} isLoggedIn={isLoggedIn} onCreatePost={handleCreatePost}/>
         <main className="flex-grow container mx-auto px-4 py-8">
-          <Outlet context={{ searchQuery }}/>
+          <Outlet context={{ searchQuery, setIsModalOpen }}/>
         </main>
 
         <Footer />

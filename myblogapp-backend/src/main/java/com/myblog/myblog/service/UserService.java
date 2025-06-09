@@ -22,6 +22,9 @@ public class UserService {
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     public User register(User user) {
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
+            throw new IllegalArgumentException("Password must not be null");
+        }
         user.setPassword(encoder.encode(user.getPassword()));
         repo.save(user);
         return user;

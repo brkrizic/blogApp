@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .csrf(customizer -> customizer.disable()).
                 authorizeHttpRequests(request -> request
                         .requestMatchers("/api/users/login", "/api/users/register", "/api/posts/posts", "/api/posts/{id}", "/images/**").permitAll()
-                        .requestMatchers("/api/posts/private/**", "/api/users/private/**").authenticated()
+                        .requestMatchers("/api/posts/private/**", "/api/users/private/**", "/api/posts/private/{postId}/like", "/api/posts/private/{postId}/unlike").authenticated()
                         .anyRequest().permitAll()).
                 httpBasic(Customizer.withDefaults()).
                 sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))

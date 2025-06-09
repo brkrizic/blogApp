@@ -44,6 +44,7 @@ export const CreateEditPost = () => {
 
     await createPost(formData);
     navigate("/account/myposts");
+    window.scrollTo(0, 0);
     
   };
 

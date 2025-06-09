@@ -13,6 +13,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class PostLikeService {
 
@@ -22,6 +25,11 @@ public class PostLikeService {
     UserRepo userRepo;
     @Autowired
     PostRepo postRepo;
+
+    public List<PostLike> getLikesByPost(Long postId){
+        List<PostLike> likes = postLikeRepo.findByPostId(postId);
+        return likes;
+    }
 
     public void likePost(Long postId){
         Long userId = getCurrentUserId();

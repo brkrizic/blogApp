@@ -1,6 +1,7 @@
 package com.myblog.myblog.repo;
 
 import com.myblog.myblog.model.Comment;
+import com.myblog.myblog.model.PostLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
